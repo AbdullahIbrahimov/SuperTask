@@ -1,10 +1,9 @@
 const express = require("express");
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../config/dev.env") });
 require("./db/mongoose");
-const proxy = require("http-proxy-middleware");
 const userRouter = require("./routers/user");
 const taskRouter = require("./routers/task");
-const path = require("path");
 const app = express();
 
 app.use(express.json());
@@ -22,11 +21,6 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
   });
 }
-
-module.exports = function (app) {
-  // add other server routes to path array
-  app.use(proxy(["/"], { target: "http://localhost:5000" }));
-};
 
 const port = process.env.PORT || 5000;
 
